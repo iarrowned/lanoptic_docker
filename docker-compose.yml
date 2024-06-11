@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  web_k:
+    container_name: ubuntu_k
+    build: .
+    ports:
+      - "8081:80"
+    volumes:
+      - ./app:/var/www/html
+      - ./log/apache2:/var/log/apache2
+    depends_on:
+      - mysql_k
+    networks:
+      - network_k
+
+  mysql_k:
+    image: mysql:5.7
+    container_name: mysql_k
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: k_db
+      MYSQL_USER: k_user
+      MYSQL_PASSWORD: k_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - network_k
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_k
+    environment:
+      PMA_HOST: mysql_k
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql_k
+    networks:
+      - network_k
+
+volumes:
+  mysql_data:
+
+networks:
+  network_k:
+    driver: bridge
