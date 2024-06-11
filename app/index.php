@@ -86,7 +86,13 @@ require_once "./config/bootstrap.php";
         })
             .then(response => response.json())
             .then(result => {
-                console.log('Success:', result);
+                if(result.status === true) {
+                    alert('Заявка сохранена');
+                    event.target.querySelectorAll('input').forEach((i) => {
+                        i.value = '';
+                    });
+                    event.target.querySelector('textarea').value = '';
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
